@@ -9,7 +9,7 @@
 
 **文件引用与附件插件 for [DeepSeek Harness (DSH)](https://www.npmjs.com/package/@deepseek-ai/dsh) Web GUI**
 
-拖拽 / `Ctrl+V` 粘贴 / 📎 按钮上传 · `@绝对路径` 引用 · 桌面端兜底引用（目录、超大文件、失败不落空）· 内联缩略图 · VLM 图片识别
+拖拽 / `Ctrl+V` 粘贴 / 📎 按钮上传 · `@绝对路径` 引用 · 桌面端兜底引用（目录、超大文件、失败不落空）· 内联缩略图 · VLM 图片识别 · 会话删除联动清理
 
 </div>
 
@@ -27,6 +27,7 @@
 - [行为一览](#行为一览)
 - [与原插件的差异](#与原插件的差异)
 - [存储细节](#存储细节)
+- [会话清理联动](#会话清理联动)
 - [安装](#安装)
 - [架构](#架构)
 - [开发说明](#开发说明)
@@ -59,6 +60,7 @@ dsh plugin --profile web add ./dsh-files-fallback
 | 🔖 **`@绝对路径` 引用** | 落盘后在光标处插入 chip，文本模型也能「看懂」附件 |
 | 🖼️ **双区预览** | 输入框内联附件条（图片缩略图 / 文档类型图标 + 文件名，可移除并同步清除引用）；聊天区图片渲染为可点击放大的缩略图（Lightbox） |
 | 🤖 **VLM 识别** | 非多模态模型下自动调用 OpenAI 兼容接口生成中文图片描述回填草稿（仅注入模型上下文）；agent 可主动调用 `describe_image` 工具 |
+| 🧹 **会话清理联动** | 搭配 [dsh-session-delete](https://github.com/funny-diodio/dsh-session-delete) 等删除会话插件：删除会话时按引用计数自动清理由该会话上传的落盘附件（设置页开关，默认关闭） |
 
 ## 处理流程
 
@@ -121,6 +123,16 @@ flowchart LR
 - **去重**：上传前先查重（键 = 文件名 + 文件大小，元数据级判定），命中直接复用已有文件路径、零字节上传；`.dsh-file-attachment/.index.json` 为去重索引（自动维护，删除后自动重建）。
 - **根目录** = 当前会话工作区（回退顺序：`session.header.cwd` → `sandboxPolicy.workspaceRoot` → `process.cwd()`），每个项目各自维护自己的 `.dsh-file-attachment/`。
 - **跨平台**：保存路径用 `path.join` 自适应分隔符；文件名清洗对 Windows / POSIX 均安全；Host 半经 `node:fs/promises` 直接写字节，无 shell 依赖。
+
+## 会话清理联动
+
+上传的文件默认**永久保留**在工作区 `.dsh-file-attachment/`（不随会话删除而清理）。如果你安装了提供「删除会话」能力的插件（如 [dsh-session-delete](https://github.com/funny-diodio/dsh-session-delete)），可以在「设置 → 文件附件 → 会话清理联动」打开开关，实现**删除会话 → 连带上传产物一起删干净**：
+
+- **触发**：会话被删除后（插件监听 `api-session/removed` 总线事件），自动清理该会话上传到 `.dsh-file-attachment/` 的文件；
+- **引用计数**：同名同大小去重复用的文件，多个会话共享同一条目——只有最后一个引用它的会话被删除时才真正删除，不会误伤还在用的文件；
+- **向后兼容**：启用联动之前上传的旧文件没有归属记录，永远不会被自动清理，零误伤；
+- **记账持久化**：会话 → 文件的引用关系随去重索引写入 `.index.json`，重启 GUI 不丢失；
+- **状态查询**：`GET /dsh-file-attachment/cleanup-status?sessionId=<id>` 返回该会话上传的文件数与总字节，可在删除前预览将回收的空间。
 
 ## 安装
 
@@ -186,7 +198,7 @@ flowchart TB
 
 **dsh-files-fallback** is a [DeepSeek Harness (DSH)](https://www.npmjs.com/package/@deepseek-ai/dsh) web GUI plugin for attaching files and images to the chat composer via drag-and-drop, paste, or the native DSH paperclip button.
 
-Key capabilities: unified storage pipeline under `.dsh-file-attachment/`; `@absolute-path` references so text-only models can use attachments; a desktop-only **path-reference fallback** — folders, oversized files, unlisted types, and failed uploads are automatically converted into `@path` references (zero copy, no size limit) instead of error toasts; inline attachment previews plus clickable chat thumbnails with a lightbox; multi-file upload with same-name conflict handling and a 50MB guard; optional OpenAI-compatible VLM descriptions for non-multimodal models; works on desktop and mobile browsers.
+Key capabilities: unified storage pipeline under `.dsh-file-attachment/`; `@absolute-path` references so text-only models can use attachments; a desktop-only **path-reference fallback** — folders, oversized files, unlisted types, and failed uploads are automatically converted into `@path` references (zero copy, no size limit) instead of error toasts; inline attachment previews plus clickable chat thumbnails with a lightbox; multi-file upload with same-name conflict handling and a 50MB guard; optional OpenAI-compatible VLM descriptions for non-multimodal models; and an opt-in **session-cleanup sync** that reference-counts and removes a session's uploaded files when that session is deleted (pairs with session-deletion plugins); works on desktop and mobile browsers.
 
 Install:
 
