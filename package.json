@@ -1,7 +1,7 @@
 {
-  "name": "@wszhoho/dsh-file-attachment",
+  "name": "dsh-files-fallback",
   "version": "0.7.1",
-  "description": "文件附件：拖拽/粘贴/上传文件（支持多文件）；图片与文档统一落盘到 .dsh-file-attachment 并以 @绝对路径 引用发送（文本模型可正常使用）；输入框内联显示图片缩略图预览与文件条目，聊天区图片同样渲染为可点击放大的缩略图、文件保持芯片样式；非多模态模型下图片自动调用可配置 VLM 识别生成中文描述回填草稿；文档/代码/配置文件可上传类型可在设置页配置；支持 PC 与移动端浏览器。File attachment plugin for DeepSeek Harness (DSH) web GUI: drag, paste, or upload files and images, inline thumbnails, clickable chat image previews, @path references, and configurable VLM image descriptions for non-multimodal models.",
+  "description": "文件引用与附件：拖拽/粘贴/上传文件（支持多文件）；图片与文档统一落盘到 .dsh-file-attachment 并以 @绝对路径 引用发送（文本模型可正常使用）；桌面端可拿到文件真实路径时，目录、超大文件、未放行类型与上传失败一律自动回退为 @路径 引用，零拷贝不受 50MB 限制；输入框内联缩略图预览，聊天区图片渲染为可点击放大的缩略图；非多模态模型下图片自动调用可配置 VLM 识别生成中文描述回填草稿；可上传类型可在设置页配置；支持 PC 与移动端浏览器。File reference & attachment plugin for DeepSeek Harness (DSH) web GUI: drag, paste, or upload files and images; desktop entries that cannot be uploaded (folders, oversized files, unlisted types, failed transfers) gracefully fall back to @path references with zero copy and no size limit.",
   "keywords": [
     "dsh",
     "dsh-plugin",
@@ -15,7 +15,6 @@
     "chat",
     "composer",
     "file-attachment",
-    "file-attachments",
     "file-upload",
     "upload",
     "drag-drop",
@@ -30,17 +29,19 @@
     "vision-language-model",
     "image-description",
     "multimodal",
-    "openai-compatible"
+    "openai-compatible",
+    "path-reference",
+    "fallback"
   ],
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/wszhoho/dsh-file-attachment.git"
+    "url": "git+https://github.com/xinstart-1/dsh-files-fallback.git"
   },
-  "homepage": "https://github.com/wszhoho/dsh-file-attachment#readme",
+  "homepage": "https://github.com/xinstart-1/dsh-files-fallback#readme",
   "bugs": {
-    "url": "https://github.com/wszhoho/dsh-file-attachment/issues"
+    "url": "https://github.com/xinstart-1/dsh-files-fallback/issues"
   },
-  "author": "wszhoho",
+  "author": "xinstart-1",
   "type": "module",
   "main": "lib/index.js",
   "exports": {

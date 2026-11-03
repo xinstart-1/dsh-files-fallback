@@ -1,4 +1,4 @@
-# dsh-file-attachment 补丁行：挂载本插件（Host 半提供 file-attachment 服务写临时目录；Client 半监听拖拽/粘贴）
+# dsh-files-fallback 补丁行：挂载本插件（Host 半提供附件落盘服务；Client 半监听拖拽/粘贴并做 @路径 兜底引用）
 - insert:
-    - id: dsh-file-attachment
-      name: '@wszhoho/dsh-file-attachment'
+    - id: dsh-files-fallback
+      name: 'dsh-files-fallback'
