@@ -1,6 +1,6 @@
 {
   "name": "dsh-files-fallback",
-  "version": "0.9.13",
+  "version": "0.9.14",
   "description": "文件引用与附件：桌面端拖拽一律以 @原路径 零拷贝引用（不落副本、无大小限制，原文件被移动/删除后由读取方报「文件不存在」）；纯浏览器拖拽/粘贴/上传任意类型文件（支持多文件）统一落盘到 .dsh-file-attachment 并以 @绝对路径 引用发送（文本模型可正常使用，50MB 上限、同名 -N、同内容去重）；输入框内联文件/文件夹 chip，聊天区图片渲染为可点击放大的缩略图；非多模态模型下图片自动调用视觉模型生成中文描述——模型从 harness 模型目录下拉选取（默认走 harness 自带模型，也可填 Base URL + API Key 走 OpenAI 兼容端点）；会话删除时联动清理落盘附件。File reference & attachment plugin for DeepSeek Harness (DSH) web GUI: on desktop, dropped files are referenced by their original absolute path (zero copy, no size limit; moved or deleted files report 'not found'); in pure browsers, drag, paste or upload files and images of any type; unified storage under .dsh-file-attachment with @absolute-path references so text-only models work; inline file/folder chips, clickable chat thumbnails; for non-multimodal models images are auto-described by a vision model picked from the harness model catalog dropdown (harness models by default, or a custom OpenAI-compatible endpoint via Base URL + API Key); optional session-cleanup sync on session delete.",
   "keywords": [
     "dsh",
